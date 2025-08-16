@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  font-family: Poppins, sans-serif;
+    color-scheme:  dark;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+   background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow-x: hidden;
+}
+.container {
+  color-scheme: white;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes textShadow {
+  0% { text-shadow: 0 0 5px #FFD700; }
+  100% { text-shadow: 0 0 15px #00FFFF, 0 0 5px #FFD700; }
+}
+@keyframes twinkle {
+  0% { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.dossier {
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+  animation: hologram 3s infinite alternate;
+}
+.starfield {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes circuit {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.1em;
+}
+
+/* For the circuit board effect */
+.logo-container::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #00FFFF, #0080FF, #00FFFF);
+  background-size: 200% 100%;
+  animation: circuit 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.logo-container:hover::after {
+  opacity: 1;
+}
+.drop-shadow-glow {
+  text-shadow: 0 0 8px #00ffff, 0 0 15px #00ffff;
+}
+.stars {
+  width: 100%;
+  height: 100%;
+  background: transparent url('https://raw.githubusercontent.com/klaudiosinani/starfield/master/stars.png') repeat;
+  animation: starAnimation 100s linear infinite;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+@keyframes starAnimation {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 10000px 5000px;
+  }
+}

@@ -5,7 +5,7 @@ function BuySellForm({ stockId, symbol }) {
 
   const handleTransaction = async (type) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/${type}`, {
+      const res = await fetch(`https://stocks-backend-fdcd.onrender.com/api/${type}`, {
         method: "POST",
         credentials: "include", // important for cookies
         headers: {

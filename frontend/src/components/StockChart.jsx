@@ -10,7 +10,7 @@ const StockChart = ({ symbol }) => {
   useEffect(() => {
     const fetchStockData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/stock/${symbol}?interval=${timeframe}`);
+        const response = await axios.get(`https://stocks-backend-fdcd.onrender.com/stock/${symbol}?interval=${timeframe}`);
         if (response.data) {
           const formattedData = response.data.map((d) => ({
             date: new Date(d.date),

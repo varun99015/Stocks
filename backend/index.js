@@ -14,7 +14,7 @@ import portfolioRoutes from "./routes/portfolio.js";
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173", // Your frontend URL
+  origin: "https://stocks-frontend-qy3l.onrender.com", // Your frontend URL
   credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
 app.use(cookieParser())

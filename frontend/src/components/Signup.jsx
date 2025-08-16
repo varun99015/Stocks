@@ -14,7 +14,7 @@ function Signup() {
         e.preventDefault();
         
         try {
-            const result = await axios.post('http://localhost:5000/api/signup', { name, email, password });
+            const result = await axios.post('https://stocks-backend-fdcd.onrender.com/api/signup', { name, email, password });
     
             if (result.data.message === "Success") {
                 console.log("Signup Successful!");

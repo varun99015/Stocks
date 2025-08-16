@@ -7,7 +7,7 @@ import Stocks from "./pages/Stocks";
 import SpaceX from "./pages/SpaceX";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Profile from "./components/Profile";
 import Navbar from "./components/Navbar";
 import MainHome from "./pages/MainHome";

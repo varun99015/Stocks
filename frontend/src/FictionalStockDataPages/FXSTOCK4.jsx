@@ -11,6 +11,7 @@ import { financeSectors } from '../constants/FX_3';
 import { miningSectors } from '../constants/FX_4';
 import { spaceDataSources } from '../constants/FX_1';
 import Footer from '../components/Footer';
+import BuySellForm from '../components/BuySellForm';
 
 
 const FXSTOCK4 = ({ stock }) => {
@@ -255,6 +256,7 @@ const FXSTOCK4 = ({ stock }) => {
             <span>Alien Treaty</span>
           </div>
         </div>
+        <BuySellForm symbol={stock.symbol}/>
       </div>
 
       {/* News Ticker */}

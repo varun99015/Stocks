@@ -9,12 +9,13 @@ import yahooFinance from "yahoo-finance2";
 import UserModel from "./models/Register.js"; 
 import stockRoutes from "./routes/fictionalStocks.js";
 import cookieParser from "cookie-parser";
-import portfolioRoutes from "./routes/portfolio.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
+import transactionRoutes from "./routes/transactionRoutes.js";
 
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: "https://stocks-frontend-qy3l.onrender.com", // Your frontend URL
+  origin: "http://localhost:5173", // Your frontend URL
   credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }));
 app.use(cookieParser())
@@ -31,7 +32,6 @@ mongoose.connect(mongoURI)
     console.error('MongoDB connection error:', err);
   });
 
-// ✅ Middleware to Verify JWT Token
 const authenticateToken = (req, res, next) => {
   const token = req.cookies.token; // ✅ Correctly reads from cookies
 
@@ -97,11 +97,9 @@ app.post("/login", async (req, res) => {
     password
   } = req.body;
 
-  // Add this line to see what the backend received
   console.log('Login attempt for email:', email);
   console.log('Password received:', password);
 
-  // Your existing validation logic
   if (!email || !password) {
     console.log('Validation failed: email or password missing');
     return res.status(400).json({
@@ -173,36 +171,11 @@ app.post('/api/logout', (req, res) => {
     message: 'Logout successful'
   });
 });
-// buy or sell Stocks
-app.use("/api", portfolioRoutes);
-// Example: server.js or routes/transactions.js
-app.post('/api/buy', (req, res) => {
-  const {
-    stockSymbol,
-    quantity,
-    price
-  } = req.body;
-  console.log(`BUY: ${quantity} of ${stockSymbol} at ${price}`);
-  // TODO: save this data to DB or simulate transaction
-  res.json({
-    message: 'Buy transaction successful'
-  });
-});
 
-app.post('/api/sell', (req, res) => {
-  const {
-    stockSymbol,
-    quantity,
-    price
-  } = req.body;
-  console.log(`SELL: ${quantity} of ${stockSymbol} at ${price}`);
-  // TODO: save this data to DB or simulate transaction
-  res.json({
-    message: 'Sell transaction successful'
-  });
-});
+app.use("/api/portfolio",authenticateToken, portfolioRoutes);
 
 app.use("/Fictional-stock", stockRoutes);
+app.use("/transactions",authenticateToken, transactionRoutes);
 
 app.get("/stock/:symbol", async (req, res) => {
   const {

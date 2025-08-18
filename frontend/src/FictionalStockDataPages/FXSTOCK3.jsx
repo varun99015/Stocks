@@ -8,6 +8,7 @@ import {
     PlaneIcon,BellElectricIcon,Atom,} from "lucide-react";
 import {SpaceHelmet,Asteroid,SpaceShuttle,BlackHole,Alien,Radiation,HologramCard} from "../constants/Custom Icons";// Import your dataset
 import { spaceDataSources,spaceSectors } from '../constants/FX_1';
+import BuySellForm from '../components/BuySellForm';
 
 const FXSTOCK3 = ({ stock }) => {
   const [price, setPrice] = useState(204.87);
@@ -217,6 +218,7 @@ const FXSTOCK3 = ({ stock }) => {
             <span>Alien Treaty</span>
           </div>
         </div>
+        <BuySellForm symbol={stock.symbol}/>
       </div>
 
       {/* News Ticker */}

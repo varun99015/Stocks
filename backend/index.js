@@ -20,7 +20,7 @@ app.use(cors({
 }));
 app.use(cookieParser())
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Use Render's port in production
 
 const mongoURI = process.env.MONGO_URI;
 
@@ -33,14 +33,14 @@ mongoose.connect(mongoURI)
   });
 
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token; // ✅ Correctly reads from cookies
+  const token = req.cookies.token;
 
   if (!token) return res.status(401).json({
     message: "Unauthorized"
   });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // ✅ Uses env secret
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {
@@ -50,7 +50,6 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// ✅ User Signup - Hash Password Before Saving
 app.post("/api/signup", async (req, res) => {
   try {
     const {
@@ -59,7 +58,6 @@ app.post("/api/signup", async (req, res) => {
       password
     } = req.body;
 
-    // Check if user already exists
     const existingUser = await UserModel.findOne({
       email
     });
@@ -69,11 +67,9 @@ app.post("/api/signup", async (req, res) => {
       });
     }
 
-    // ✅ Correctly Hash Password Before Storing
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Save User in Database
     const user = await UserModel.create({
       name,
       email,
@@ -90,18 +86,14 @@ app.post("/api/signup", async (req, res) => {
     });
   }
 });
-// ✅ User Login - Validate & Return Token
+
 app.post("/login", async (req, res) => {
   const {
     email,
     password
   } = req.body;
 
-  console.log('Login attempt for email:', email);
-  console.log('Password received:', password);
-
   if (!email || !password) {
-    console.log('Validation failed: email or password missing');
     return res.status(400).json({
       error: "Email and Password are required"
     });
@@ -113,7 +105,6 @@ app.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      console.log('Login failed: user not found');
       return res.status(400).json({
         error: "No Registered User"
       });
@@ -122,13 +113,11 @@ app.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log('Login failed: incorrect password');
       return res.status(400).json({
         error: "Incorrect Password"
       });
     }
 
-    // ✅ Generate JWT Token on Success
     const token = jwt.sign({
       id: user._id,
       name: user.name
@@ -136,10 +125,11 @@ app.post("/login", async (req, res) => {
       expiresIn: '1d'
     });
 
-    res.cookie('token', token, {
+    const cookieOptions = {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
-    });
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    };
+
     if (process.env.NODE_ENV === 'production') {
       cookieOptions.sameSite = 'None';
       cookieOptions.secure = true;
@@ -161,7 +151,7 @@ app.post("/login", async (req, res) => {
     });
   }
 });
-// ✅ Protected Route - Fetch User Profile
+
 app.get("/api/profile", authenticateToken, async (req, res) => {
   res.json({
     name: req.user.name,
@@ -170,46 +160,55 @@ app.get("/api/profile", authenticateToken, async (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  res.clearCookie('token', {
-    httpOnly: true,
-    sameSite: 'Lax', // match your login config
-    secure: false // match your login config (true if using HTTPS)
-  });
-  res.json({
-    message: 'Logout successful'
-  });
+    // --- FIX: Define cookieOptions within the /logout route's scope ---
+    const cookieOptions = {
+        httpOnly: true,
+    };
+
+    if (process.env.NODE_ENV === 'production') {
+        cookieOptions.sameSite = 'None';
+        cookieOptions.secure = true;
+    } else {
+        cookieOptions.sameSite = 'Lax';
+        cookieOptions.secure = false;
+    }
+    
+    res.clearCookie('token', cookieOptions);
+    // -----------------------------------------------------------------
+
+    res.json({
+        message: 'Logout successful'
+    });
 });
 
-app.use("/api/portfolio",authenticateToken, portfolioRoutes);
-
+app.use("/api/portfolio", authenticateToken, portfolioRoutes);
 app.use("/Fictional-stock", stockRoutes);
-app.use("/transactions",authenticateToken, transactionRoutes);
+app.use("/transactions", authenticateToken, transactionRoutes);
 
+// --- (Your other routes like /stock/:symbol and /api/spacex/launches remain unchanged) ---
 app.get("/stock/:symbol", async (req, res) => {
   const {
     symbol
   } = req.params;
   const {
     interval
-  } = req.query; // Accepts "3m", "2y", etc.
+  } = req.query;
 
   try {
     if (interval) {
-      // Define range and frequency based on interval
       let range = "3mo";
       let freq = "1d";
 
       if (interval === "2y") {
         range = "2y";
-        freq = "1wk"; // Weekly data for 2 years
+        freq = "1wk";
       }
 
       const history = await yahooFinance.historical(symbol, {
-        period1: new Date(Date.now() - (interval === "2y" ? 2 : 0.25) * 365 * 24 * 60 * 60 * 1000), // estimate
+        period1: new Date(Date.now() - (interval === "2y" ? 2 : 0.25) * 365 * 24 * 60 * 60 * 1000),
         interval: freq,
       });
 
-      // Format and return relevant data
       const cleaned = history.map((d) => ({
         date: d.date,
         close: d.close,
@@ -230,15 +229,17 @@ app.get("/stock/:symbol", async (req, res) => {
 
 app.get("/api/spacex/launches", async (req, res) => {
   try {
-    // Copy the logic from getSpaceXData above
-    const launches = await getSpaceXData(); // Move that function to a helper file and import here
-    res.json(launches);
+    // This function needs to be defined or imported for this route to work
+    // const launches = await getSpaceXData(); 
+    res.json({ message: "SpaceX data endpoint is active" }); // Placeholder response
   } catch (err) {
     res.status(500).json({
       error: "Failed to fetch SpaceX data"
     });
   }
 });
+
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

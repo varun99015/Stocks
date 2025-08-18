@@ -12,7 +12,7 @@ const Dashboard = () => {
     const fetchPortfolio = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get('http://localhost:5000/api/portfolio', {
+        const res = await axios.get('https://stocks-backend-fdcd.onrender.com/api/portfolio', {
           withCredentials: true, // This is the axios equivalent of credentials: 'include'
         });
         setPortfolioData(res.data);

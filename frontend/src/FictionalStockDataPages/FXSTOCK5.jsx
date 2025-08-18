@@ -10,6 +10,7 @@ import {SpaceHelmet,Asteroid,SpaceShuttle,BlackHole,Alien,Radiation,HologramCard
 import { spaceDataSources } from '../constants/FX_1';
 import { colonizationSectors } from '../constants/FX_5';
 import Footer from '../components/Footer';
+import BuySellForm from '../components/BuySellForm';
 
 
 const FXSTOCK5 = ({ stock }) => {
@@ -232,6 +233,7 @@ const FXSTOCK5 = ({ stock }) => {
             <span>Alien Treaty</span>
           </div>
         </div>
+        <BuySellForm symbol={stock.symbol}/>
       </div>
 
       {/* News Ticker */}

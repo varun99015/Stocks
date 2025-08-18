@@ -217,7 +217,7 @@ const FXSTOCK1 = ({ stock }) => {
             <span>Alien Treaty</span>
           </div>
         </div>
-        <BuySellForm stockSymbol={stock.symbol} currentPrice={price} />
+          <BuySellForm symbol={stock.symbol}/>
       </div>
 
       {/* News Ticker */}

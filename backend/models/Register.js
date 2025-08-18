@@ -1,27 +1,26 @@
+// In your models/Register.js file
+
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  
+  balance: { type: Number, default: 10000 },
 
-  portfolio: [
-    {
-      stockId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stock' },
-      quantity: Number,
-      avgBuyPrice: Number
-    }
-  ],
+  portfolio: [{
+    symbol: { type: String, required: true },
+    quantity: { type: Number, required: true, min: 0 },
+  }],
 
-  transactions: [
-    {
-      stockId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stock' },
-      type: { type: String, enum: ['buy', 'sell'] },
-      quantity: Number,
-      price: Number,
-      date: { type: Date, default: Date.now }
-    }
-  ]
+  transactions: [{
+    symbol: { type: String, required: true },
+    type: { type: String, enum: ['buy', 'sell'], required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    date: { type: Date, default: Date.now }
+  }]
 });
 
 const UserModel = mongoose.model('User', userSchema);

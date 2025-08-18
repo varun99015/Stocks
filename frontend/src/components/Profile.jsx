@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import bg from "../assets/profile-pictures/favicon.ico";
+import MainDeck from '../pages/MainDeck';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -10,7 +11,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch('https://stocks-backend-fdcd.onrender.com/api/profile', {
+        const response = await fetch('http://localhost:5000/api/profile', {
           method: 'GET',
           credentials: 'include',
         });
@@ -35,16 +36,19 @@ const Profile = () => {
   return (
     <div className="font-mono relative max-w-[100%] h-full flex flex-col mx-3 py-5 justify-start space-y-5 text-[#2ca5eb] border-[#237da7] border-r-2 bg-black/50 backdrop-blur-md">
       {/* Sci-fi animated border */}
+      
       <div className="absolute inset-0 border-2 border-[#237da7] opacity-70">
         <div className="absolute top-0 left-0 w-2 h-2 bg-[#237da7] animate-pulse"></div>
         <div className="absolute top-0 right-0 w-2 h-2 bg-[#237da7] animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#237da7] animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#237da7] animate-pulse"></div>
       </div>
-
+    
       {/* User profile with sci-fi elements */}
       <div className='flex flex-col justify-center items-center relative z-10'>
         {/* Holographic avatar */}
+        <div><MainDeck/></div>
+        
         <div className="relative mb-3">
           <img 
             src={bg} 

@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
   origin: "https://stocks-frontend-qy3l.onrender.com", // Your frontend URL
-  credentials: true // Allow credentials (cookies, authorization headers, etc.)
+  credentials: true
 }));
 app.use(cookieParser())
 
@@ -138,10 +138,18 @@ app.post("/login", async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false, // true if using HTTPS
-      sameSite: 'Lax', // or 'Strict'/'None'
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
+    if (process.env.NODE_ENV === 'production') {
+      cookieOptions.sameSite = 'None';
+      cookieOptions.secure = true;
+    } else {
+      cookieOptions.sameSite = 'Lax';
+      cookieOptions.secure = false; 
+    }
+
+    res.cookie('token', token, cookieOptions);
+    
     res.json({
       status: "Success",
       message: "Logged in successful"

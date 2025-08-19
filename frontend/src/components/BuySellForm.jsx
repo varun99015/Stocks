@@ -96,7 +96,7 @@ function BuySellForm({ symbol }) {
           value={quantity}
           min={1}
           max={10000}
-          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)) || 1)}
+          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
           className="stellar-input"
           placeholder="QUANTUM UNITS"
         />

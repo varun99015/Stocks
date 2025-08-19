@@ -16,6 +16,8 @@ import Dashboard from "./pages/Dashboard";
 import FXSTOCK1 from "./FictionalStockDataPages/FXSTOCK1";
 import DynamicStock from "./FictionalStockDataPages/DynamicStock";
 import Footer from "./components/Footer";
+import NavScan from "./components/NavScan";
+import Settings from "./components/Settings";
 
 const App = () => {
   return (
@@ -37,6 +39,8 @@ const App = () => {
         <Route path="/landnavbar" element={<LandNavbar />} />
         <Route path="/f_stock/:type/:symbol" element={<DynamicStock />} />
         <Route path="footer" element={<Footer/>}/>
+        <Route path="scan" element={<NavScan/>}/>
+        <Route path="settings" element={<Settings/>}/>
       </Routes>
     </Router>
   );

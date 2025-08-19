@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { User, LogOut, Rocket, Satellite, PieChart, Database, ScanEye } from "lucide-react";
 import React from "react";
+import NavScan from "./NavScan.jsx";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Navbar = () => {
   );
   const handleLogout = async () => {
     try {
-      const res = await fetch('https://stocks-backend-fdcd.onrender.com/api/logout', {
+      const res = await fetch('http://localhost:5000/api/logout', {
         method: 'POST',
         credentials: 'include',
       });
@@ -90,17 +91,7 @@ const Navbar = () => {
           color="red"
           text="SPACEFLIGHT"
         />
-
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-lg blur opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
-          <button 
-            className="relative flex items-center px-3 py-2 bg-gray-800/80 rounded-lg border border-gray-700 group-hover:border-cyan-400 transition-all"
-            onClick={() => navigate('/scan')}
-          >
-            <ScanEye className="h-5 w-5 text-purple-400 group-hover:text-cyan-300 mr-2" />
-            <span className="font-mono text-sm text-cyan-300 group-hover:text-white tracking-wider">SCAN</span>
-          </button>
-        </div>
+        <NavScan/>
       </div>
 
       {/* Enhanced User Controls with Status Light */}

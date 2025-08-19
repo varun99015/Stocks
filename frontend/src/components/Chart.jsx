@@ -12,7 +12,7 @@ const Chart = ({ symbol }) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`https://stocks-backend-fdcd.onrender.com/api/stocks/data/${symbol}?interval=${interval}`);
+        const res = await axios.get(`http://localhost:5000/api/stocks/data/${symbol}?interval=${interval}`);
         const formattedData = res.data.map((d) => ({
           date: new Date(d.date),
           price: d.price,
@@ -210,7 +210,7 @@ svg.selectAll(".data-point")
   .transition() // 👈 transition comes last
   .duration(1000)
   .attr("r", 4)
-  .attr("opacity", 1);
+  .attr("opacity", 0);
 
 
     // Add glow filter for hover effects

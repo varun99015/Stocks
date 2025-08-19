@@ -182,7 +182,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 app.use("/api/portfolio", authenticateToken, portfolioRoutes);
-app.use("/Fictional-stock", stockRoutes);
+app.use('/api/stocks',stockRoutes);
 app.use("/transactions", authenticateToken, transactionRoutes);
 
 // --- (Your other routes like /stock/:symbol and /api/spacex/launches remain unchanged) ---

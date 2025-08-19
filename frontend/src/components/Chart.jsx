@@ -10,7 +10,7 @@ const Chart = ({ symbol }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://stocks-backend-fdcd.onrender.com/fictional-stock/${symbol}?interval=${interval}`);
+        const res = await axios.get(`https://stocks-backend-fdcd.onrender.com/api/stocks/data/${symbol}?interval=${interval}`);
         const formattedData = res.data.map((d) => ({
           date: new Date(d.date),
           price: d.price,

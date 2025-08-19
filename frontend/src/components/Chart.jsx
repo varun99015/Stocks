@@ -100,7 +100,7 @@ const Chart = ({ symbol }) => {
       <h2 className="text-xl font-semibold mb-4">{symbol}</h2>
 
       <div className="flex gap-2 mb-4">
-        {["1d", "1m", "3m", "6m", "1y", "5y"].map((range) => (
+        {["1m", "3m", "6m", "1y", "5y"].map((range) => (
           <button
             key={range}
             onClick={() => setInterval(range)}

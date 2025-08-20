@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Wallet, LineChart, History, Landmark } from 'lucide-react';
 import MainDeck from './MainDeck';
+import MarketOverview from "../components/MarketOverview";
 
 const Dashboard = () => {
   const [portfolioData, setPortfolioData] = useState(null);
@@ -121,8 +122,8 @@ const Dashboard = () => {
             </table>
           </div>
         </div>
-
       </div>
+      <MarketOverview/>
     </div>
   );
 };

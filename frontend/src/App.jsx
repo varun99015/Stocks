@@ -1,9 +1,7 @@
-import React from "react";
 import "./index.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandNavbar from "./components/Navbar";
 import Explore from "./pages/Explore";
-import Stocks from "./pages/Stocks";
 import SpaceX from "./pages/SpaceX";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -18,6 +16,7 @@ import DynamicStock from "./FictionalStockDataPages/DynamicStock";
 import Footer from "./components/Footer";
 import NavScan from "./components/NavScan";
 import Settings from "./components/Settings";
+import MarketOverview from "./components/MarketOverview";
 
 const App = () => {
   return (
@@ -30,7 +29,6 @@ const App = () => {
         <Route path="/explore" element={<Explore />} />
         <Route path="fstock" element={<FXSTOCK1/>}/>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/stocks" element={<Stocks />} />
         <Route path="/spacex" element={<SpaceX />} />
         <Route path="/register" element={<Signup />} />
         <Route path='/feature' element= {<Features/>}/>
@@ -41,6 +39,7 @@ const App = () => {
         <Route path="footer" element={<Footer/>}/>
         <Route path="scan" element={<NavScan/>}/>
         <Route path="settings" element={<Settings/>}/>
+        <Route path="marketoverview" element={<MarketOverview/>}/>
       </Routes>
     </Router>
   );

@@ -45,7 +45,7 @@ const UserStatusIndicator = () => {
               <span>Full Login</span>
             </a>
             <a
-              href="/demo"
+              href="/explore"
               className="flex items-center space-x-3 px-4 py-2 text-sm text-cyan-200 hover:bg-cyan-800/30 transition-all"
             >
               <LogOut className="h-4 w-4" />
@@ -57,4 +57,5 @@ const UserStatusIndicator = () => {
     </div>
   );
 };
+
 export default UserStatusIndicator;

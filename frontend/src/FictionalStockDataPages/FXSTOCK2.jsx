@@ -2,36 +2,104 @@ import React, { useState, useEffect } from 'react';
 import Chart from '../components/Chart';
 import MainDeck from '../pages/MainDeck';
 import { useNavigate } from 'react-router-dom';
-import { 
-    Rocket, Satellite, TrendingUp, Moon, ShieldHalf, Orbit, 
-    Globe, Wifi, SatelliteDish, Telescope, Sparkles, OrbitIcon,
-    PlaneIcon,BellElectricIcon,Atom,} from "lucide-react";
-import {SpaceHelmet,Asteroid,SpaceShuttle,BlackHole,Alien,Radiation,HologramCard} from "../constants/Custom Icons";// Import your dataset
-import { spaceDataSources,spaceSectors } from '../constants/FX_1';
+import { SatelliteDish,Atom,} from "lucide-react";
+import {SpaceHelmet,BlackHole,Alien,Radiation} from "../constants/Custom Icons";
+import { spaceDataSources } from '../constants/FX_1';
 import { commsSectors } from '../constants/FX_2';
 import Footer from "../components/Footer";
 import BuySellForm from '../components/BuySellForm';
+import axios from 'axios';
+
 
 const FXSTOCK2 = ({ stock }) => {
-  const [price, setPrice] = useState(204.87);
-  const [priceHistory, setPriceHistory] = useState([]);
+ const [stockData, setStockData] = useState(null);
+  const [historicalData, setHistoricalData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // Simulate price fluctuations
+  
   useEffect(() => {
-    const interval = setInterval(() => {
-      const fluctuation = (Math.random() * 4 - 2); // -2% to +2%
-      const newPrice = price * (1 + fluctuation / 100);
-      setPrice(newPrice);
-      setPriceHistory(prev => [...prev.slice(-29), newPrice]);
-    }, 3000);
+    const fetchStockData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`https://stocks-backend-fdcd.onrender.com/api/stocks/data/${stock.symbol}`);
+        
+        if (response.data && response.data.length > 0) {
+          // Store the full historical data
+          setHistoricalData(response.data);
+          
+          // Get the latest data point (most recent date)
+          const latestData = response.data[response.data.length - 1];
+          setStockData(latestData);
+        }
+      } catch (err) {
+        console.error("Error fetching stock data:", err);
+        setError("Failed to load stock data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearInterval(interval);
-  }, [price]);
+    fetchStockData();
+  }, [stock.symbol]);
 
-  // Calculate daily change
-  const dailyChange = priceHistory.length > 1
-    ? ((price - priceHistory[0]) / priceHistory[0] * 100).toFixed(2)
-    : 0;
+  // Calculate daily change based on actual data
+  const calculateDailyChange = () => {
+    if (!historicalData || historicalData.length < 2) return 0;
+    
+    const currentPrice = historicalData[historicalData.length - 1].price;
+    const previousPrice = historicalData[historicalData.length - 2].price;
+    return ((currentPrice - previousPrice) / previousPrice * 100).toFixed(2);
+  };
+
+  // Calculate 52-week range from historical data
+  const calculate52WeekRange = () => {
+    if (!historicalData.length) return { low: 0, high: 0 };
+    
+    const prices = historicalData.map(item => item.price);
+    const low = Math.min(...prices);
+    const high = Math.max(...prices);
+    return { low, high };
+  };
+
+  // Calculate market cap (using latest price)
+  const calculateMarketCap = () => {
+    if (!stockData) return 0;
+    return (stockData.price * 5.8).toFixed(1);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-cyan-300 font-mono p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-xl font-mono text-cyan-300">LOADING QUANTUM DATA...</div>
+          <div className="text-sm text-cyan-500 mt-2">ANALYZING {stock.symbol} METRICS</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-red-400 font-mono p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-mono mb-2">⚠️ DATA STREAM FAILURE</div>
+          <div className="text-sm text-red-300">{error}</div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-red-900/50 border border-red-500 text-red-300 rounded-md hover:bg-red-800/50 transition-colors font-mono"
+          >
+            RETRY CONNECTION
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const dailyChange = calculateDailyChange();
+  const week52Range = calculate52WeekRange();
+  const marketCap = calculateMarketCap();
 
   return (
     <div className='min-h-fit'>
@@ -73,7 +141,7 @@ const FXSTOCK2 = ({ stock }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-cyan-400">Current Price:</p>
-              <p className="text-green-400 font-bold text-xl">Ξ{price.toFixed(2)}</p>
+              <p className="text-green-400 font-bold text-xl">Ξ{stockData.price.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-cyan-400">Daily Change:</p>
@@ -83,12 +151,20 @@ const FXSTOCK2 = ({ stock }) => {
             </div>
             <div>
               <p className="text-cyan-400">Market Cap:</p>
-              <p>Ξ{(price * 5.8).toFixed(1)} Billion</p>
+              <p>Ξ{marketCap} Billion</p>
             </div>
             <div>
               <p className="text-cyan-400">52-Week Range:</p>
-              <p>Ξ{(price * 0.6).toFixed(2)} - Ξ{(price * 1.3).toFixed(2)}</p>
+               <p>Ξ{week52Range.low.toFixed(2)} - Ξ{week52Range.high.toFixed(2)}</p>
             </div>
+             <div>
+                <p className="text-cyan-400">Last Updated:</p>
+                <p>{new Date(stockData.date).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <p className="text-cyan-400">Data Points:</p>
+                <p>{historicalData.length} records</p>
+              </div>
           </div>
 
           {/* Market Anomalies */}
@@ -207,7 +283,7 @@ const FXSTOCK2 = ({ stock }) => {
         <h2 className="text-2xl font-semibold text-cyan-200 flex items-center mb-4">
           <BlackHole className="mr-2" /> Quantum Price Flux
         </h2></div> 
-        <Chart symbol={stock.symbol} priceHistory={priceHistory} />
+        <Chart symbol={stock.symbol}/>
         <div className="flex justify-between mt-2 text-xs text-cyan-400">
           <div className="flex items-center">
             <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>

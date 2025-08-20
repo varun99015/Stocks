@@ -152,41 +152,7 @@ function BuySellForm({ symbol }) {
           </div>
         </div>
       )}
-      <style jsx="true">{`
-        .space-trading-interface {
-          border: 1px solid #0fa;
-          border-radius: 4px;
-          padding: 1.5rem;
-          background: rgba(0, 20, 30, 0.8);
-          box-shadow: 0 0 20px rgba(0, 255, 170, 0.2);
-          font-family: 'Segment7Standard', monospace;
-        }
-        .quantum-input-group { position: relative; margin-bottom: 1.5rem; }
-        .stellar-input { width: 100%; padding: 0.8rem 1rem 0.8rem 3rem; background: #011; border: 1px solid #0fa; color: #0fa; font-size: 1.2rem; letter-spacing: 1px; border-radius: 4px; }
-        .input-unit { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #0fa; opacity: 0.7; }
-        .tactical-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .warp-button { padding: 1rem; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80px; }
-        .warp-button.buy { background: linear-gradient(135deg, #0a3, #0fa); color: #011; }
-        .warp-button.sell { background: linear-gradient(135deg, #f05, #f70); color: #011; }
-        .warp-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 255, 170, 0.4); }
-        .warp-button:disabled { opacity: 0.7; cursor: not-allowed; }
-        .warp-active { animation: warp-pulse 1.5s infinite; }
-        @keyframes warp-pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-        .pulse-animation { animation: text-pulse 1s infinite; }
-        @keyframes text-pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
-        .subtext { font-size: 0.7rem; opacity: 0.8; margin-top: 0.3rem; }
-        .transmission-feedback { margin-top: 1.5rem; animation: appear 0.5s ease; }
-        @keyframes appear { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .holographic-display { padding: 1rem; border-radius: 4px; background: rgba(0, 10, 20, 0.9); border: 1px solid; font-family: 'Courier New', monospace; }
-        .success .holographic-display { border-color: #0fa; box-shadow: 0 0 10px rgba(0, 255, 170, 0.3); }
-        .error .holographic-display { border-color: #f05; box-shadow: 0 0 10px rgba(255, 0, 85, 0.3); }
-        .transmission-header { font-weight: bold; margin-bottom: 0.5rem; color: #fff; }
-        .transmission-details { color: #aaa; margin-bottom: 0.5rem; }
-        .stellar-coordinates { font-size: 0.7rem; color: #666; font-style: italic; }
-      `}</style>
     </div>
   );
 }
-
 export default BuySellForm;

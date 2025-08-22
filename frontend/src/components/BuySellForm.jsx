@@ -38,7 +38,7 @@ function BuySellForm({ symbol }) {
     playSound();
 
     try {
-      const res = await fetch(`https://stocks-backend-fdcd.onrender.com/transactions/${type}`, {
+      const res = await fetch(`https://stocks-backend-fdcd.onrender.com/api/transactions/${type}`, {
         method: "POST",
         credentials: 'include',
         headers: {

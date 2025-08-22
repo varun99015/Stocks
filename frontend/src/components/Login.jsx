@@ -47,7 +47,7 @@ function Login() {
         }
 
         try {
-            const response = await fetch("https://stocks-backend-fdcd.onrender.com/login", {
+            const response = await fetch("https://stocks-backend-fdcd.onrender.com/api/login", {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

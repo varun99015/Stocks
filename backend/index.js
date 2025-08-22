@@ -99,13 +99,11 @@ app.post("/api/login", async (req, res) => { // NOTE: The path is now /api/login
     
     const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    // --- COOKIE LOGIC IS NOW SIMPLER ---
-    // No need to check for production, as it's always same-site
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
-      sameSite: 'Lax', // Lax is the secure default for same-site
-      secure: true // Use true if your Render service is on HTTPS (it is)
+      sameSite: 'Lax', // Lax is the correct, secure default for same-site
+      secure: true     // Always true because Render uses HTTPS
     });
     
     res.json({ status: "Success", message: "Logged in successful" });

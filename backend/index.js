@@ -2,38 +2,40 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import cors from "cors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import yahooFinance from "yahoo-finance2";
-import UserModel from "./models/Register.js"; 
-import stockRoutes from "./routes/fictionalStocks.js";
 import cookieParser from "cookie-parser";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// --- ROUTE IMPORTS ---
+import UserModel from "./models/Register.js"; 
+import fictionalStockRoutes from "./routes/fictionalStocks.js";
+import overviewRoutes from "./routes/overviewRoutes.js"; // You'll need this router
 import portfolioRoutes from "./routes/portfolioRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: "https://stocks-frontend-qy3l.onrender.com", // Your frontend URL
-  credentials: true
-}));
-app.use(cookieParser())
+app.use(cookieParser());
 
-const PORT = process.env.PORT || 5000; // Use Render's port in production
-
+const PORT = process.env.PORT || 5000;
 const mongoURI = process.env.MONGO_URI;
 
 mongoose.connect(mongoURI)
-  .then(async () => {
-    console.log('MongoDB connected successfully.');
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
+  .then(() => console.log('MongoDB connected successfully.'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
+// --- 1. SERVE THE REACT FRONTEND ---
+// This serves the static files (HTML, CSS, JS) from your 'dist' folder
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// --- 2. SETUP YOUR API ROUTES ---
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token;
+const token = req.cookies.token;
 
   if (!token) return res.status(401).json({
     message: "Unauthorized"
@@ -87,68 +89,29 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const {
-    email,
-    password
-  } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({
-      error: "Email and Password are required"
-    });
-  }
-
+app.post("/api/login", async (req, res) => { // NOTE: The path is now /api/login
+  const { email, password } = req.body;
   try {
-    const user = await UserModel.findOne({
-      email
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        error: "No Registered User"
-      });
-    }
+    const user = await UserModel.findOne({ email });
+    if (!user) return res.status(400).json({ error: "No Registered User" });
 
     const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: "Incorrect Password" });
+    
+    const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    if (!isMatch) {
-      return res.status(400).json({
-        error: "Incorrect Password"
-      });
-    }
-
-    const token = jwt.sign({
-      id: user._id,
-      name: user.name
-    }, process.env.JWT_SECRET, {
-      expiresIn: '1d'
-    });
-
-    const cookieOptions = {
+    // --- COOKIE LOGIC IS NOW SIMPLER ---
+    // No need to check for production, as it's always same-site
+    res.cookie('token', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
-    };
-
-    if (process.env.NODE_ENV === 'production') {
-      cookieOptions.sameSite = 'None';
-      cookieOptions.secure = true;
-    } else {
-      cookieOptions.sameSite = 'Lax';
-      cookieOptions.secure = false; 
-    }
-
-    res.cookie('token', token, cookieOptions);
+      sameSite: 'Lax', // Lax is the secure default for same-site
+      secure: true // Use true if your Render service is on HTTPS (it is)
+    });
     
-    res.json({
-      status: "Success",
-      message: "Logged in successful"
-    });
+    res.json({ status: "Success", message: "Logged in successful" });
   } catch (error) {
-    console.error('Server error during login:', error.message);
-    res.status(500).json({
-      error: error.message
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -181,11 +144,11 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
+// app.use("/api/real-stocks", realStockRoutes); // For the Yahoo Finance data
 app.use("/api/portfolio", authenticateToken, portfolioRoutes);
 app.use('/api/stocks',stockRoutes);
-app.use("/transactions", authenticateToken, transactionRoutes);
+app.use("/api/transactions", authenticateToken, transactionRoutes);
 
-// --- (Your other routes like /stock/:symbol and /api/spacex/launches remain unchanged) ---
 app.get("/stock/:symbol", async (req, res) => {
   const {
     symbol
@@ -239,6 +202,9 @@ app.get("/api/spacex/launches", async (req, res) => {
   }
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

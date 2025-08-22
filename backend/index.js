@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 
 // --- ROUTE IMPORTS ---
 import UserModel from "./models/Register.js"; 
-import fictionalStockRoutes from "./routes/fictionalStocks.js";
+import stockRoutes from "./routes/fictionalStocks.js";
 import portfolioRoutes from "./routes/portfolioRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 

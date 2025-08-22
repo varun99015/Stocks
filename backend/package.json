@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest",
-    "build": "npm install --prefix ./frontend && npm run build --prefix ./frontend && npm install"
-  },
+ "scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js",
+  "test": "jest",
+  "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
+  "build": "npm install && npm run build:frontend"
+},
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
@@ -26,3 +27,4 @@
     "nodemon": "^3.1.10"
   }
 }
+
